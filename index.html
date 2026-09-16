@@ -4,8 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="theme-color" content="#101010" />
-  <meta name="description" content="See what your photos share. Choose which metadata to remove, privately in your browser." />
-  <title>ClearFrame — A little less attached.</title>
+  <meta name="description" content="View and remove photo metadata, including location, camera settings, and dates." />
+  <title>ClearFrame — Photo metadata cleaner</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23ededeb'/%3E%3Cpath d='M9 13V9h4M19 9h4v4M23 19v4h-4M13 23H9v-4' fill='none' stroke='%23101010' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
 </head>
@@ -24,14 +24,12 @@
   <header class="topbar">
     <a class="brand" href="#" aria-label="ClearFrame home"><svg class="icon brand-mark"><use href="#icon-frame"/></svg>clearframe<span class="brand-period">.</span></a>
     <nav aria-label="Main navigation"><a href="#scanner" class="nav-link active">Cleaner</a><a href="#how-it-works" class="nav-link">How it works</a></nav>
-    <span class="header-meta"><span class="live-dot"></span>All local. All yours.</span>
   </header>
 
   <main>
     <section class="hero" aria-labelledby="page-title">
-      <span class="hero-kicker"><svg class="icon"><use href="#icon-lock"/></svg>A little less attached.</span>
-      <h1 id="page-title">Share the photo.<br><span>Keep the details.</span></h1>
-      <p>Location, camera, dates. Your photos carry more than pixels.<br class="desktop-break"> Choose what stays, clear what doesn’t. Right here in your browser.</p>
+      <h1 id="page-title">Your photos.<br><span>Only the details you choose.</span></h1>
+      <p>See the location, camera info, and other metadata saved in your photos.<br class="desktop-break"> Remove what you don’t want before you share them.</p>
     </section>
 
     <section id="scanner" class="tool-shell" aria-label="Image metadata scanner" tabindex="-1">
@@ -41,26 +39,25 @@
         <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Choose images or drop them here">
           <div class="photo-stack" aria-hidden="true">
             <div class="stack-card stack-back"><span></span><span></span><span></span></div>
-            <div class="stack-card stack-front"><svg viewBox="0 0 120 86" fill="none"><rect width="120" height="86" rx="5" fill="#252729"/><circle cx="86" cy="24" r="9" fill="#b9bdb6"/><path d="M0 74 36 32 74 75 95 50 120 76v10H0Z" fill="#555c56"/><path d="m0 78 37-25 35 33H0Z" fill="#747b72"/><path d="m50 86 39-33 31 29v4Z" fill="#949b8d"/></svg><span class="photo-caption">a moment, just yours</span></div>
+            <div class="stack-card stack-front"><svg viewBox="0 0 120 86" fill="none"><rect width="120" height="86" rx="5" fill="#252729"/><circle cx="86" cy="24" r="9" fill="#b9bdb6"/><path d="M0 74 36 32 74 75 95 50 120 76v10H0Z" fill="#555c56"/><path d="m0 78 37-25 35 33H0Z" fill="#747b72"/><path d="m50 86 39-33 31 29v4Z" fill="#949b8d"/></svg><span class="photo-caption">IMG_0248</span></div>
             <span class="stack-badge"><svg class="icon"><use href="#icon-check"/></svg></span>
           </div>
-          <h2>A fresh start for your photos.</h2>
-          <p>Drop images here, or pick a few from your device.</p>
+          <h2>Drop your photos here</h2>
+          <p>Add a single image or select a few at once.</p>
           <button id="browseBtn" class="primary-button" type="button"><svg class="icon"><use href="#icon-plus"/></svg><span>Choose photos</span></button>
-          <small>One photo or a whole collection.</small>
         </div>
-        <div class="workspace-bottom"><span><svg class="icon"><use href="#icon-lock"/></svg>Nothing uploaded. Ever.</span><button id="sampleBtn" class="sample-button" type="button">Try a sample<svg class="icon"><use href="#icon-arrow"/></svg></button></div>
+        <div class="workspace-bottom"><span>Not sure where to start?</span><button id="sampleBtn" class="sample-button" type="button">Try a sample<svg class="icon"><use href="#icon-arrow"/></svg></button></div>
       </div>
 
       <section id="results" class="results" aria-label="Photo review" hidden>
-        <div class="batch-head"><div><span class="eyebrow">YOUR COLLECTION</span><h2><span id="batchCount">0</span> <span id="batchNoun">photos</span></h2></div><div class="batch-actions"><button id="addMore" class="secondary-button" type="button"><svg class="icon"><use href="#icon-plus"/></svg>Add photos</button><button id="startOver" class="text-button" type="button">Start over</button></div></div>
+        <div class="batch-head"><div><span class="eyebrow">SELECTED PHOTOS</span><h2><span id="batchCount">0</span> <span id="batchNoun">photos</span></h2></div><div class="batch-actions"><button id="addMore" class="secondary-button" type="button"><svg class="icon"><use href="#icon-plus"/></svg>Add photos</button><button id="startOver" class="text-button" type="button">Start over</button></div></div>
         <div class="batch-layout">
-          <aside class="batch-panel" aria-label="Uploaded images"><div class="sidebar-label">PHOTOS <span>Choose to review</span></div><div id="batchList" class="batch-list"></div><button id="cleanAllBtn" class="batch-download" type="button"><span>Download collection</span><b>ZIP ↓</b></button><p class="batch-hint">Uses each photo’s selections.</p></aside>
+          <aside class="batch-panel" aria-label="Uploaded images"><div class="sidebar-label">PHOTOS <span>Choose to review</span></div><div id="batchList" class="batch-list"></div><button id="cleanAllBtn" class="batch-download" type="button"><span>Download all</span><b>ZIP ↓</b></button><p class="batch-hint">Uses each photo’s selections.</p></aside>
           <div class="detail-panel">
-            <div class="result-top"><div class="file-card"><img id="preview" alt="Selected image preview" /><div><p id="fileName"></p><span id="fileDetails"></span></div></div><span class="selected-label"><span class="live-dot"></span>Scanned locally</span></div>
+            <div class="result-top"><div class="file-card"><img id="preview" alt="Selected image preview" /><div><p id="fileName"></p><span id="fileDetails"></span></div></div><span class="selected-label"><span class="live-dot"></span>Ready</span></div>
             <div class="review-tabs" role="tablist" aria-label="Photo review views"><button id="cleanTab" class="review-tab active" type="button" role="tab" aria-selected="true" aria-controls="cleanView" tabindex="0"><svg class="icon"><use href="#icon-sliders"/></svg>Choose what to remove</button><button id="detailsTab" class="review-tab" type="button" role="tab" aria-selected="false" aria-controls="detailsView" tabindex="-1"><svg class="icon"><use href="#icon-image"/></svg>Photo details</button></div>
             <div id="cleanView" role="tabpanel" aria-labelledby="cleanTab">
-              <div class="metadata-toolbar"><div><h3 id="summaryTitle">What’s attached</h3><p id="selectionCount" aria-live="polite"></p></div><div class="selection-actions"><button id="selectAll" class="text-button" type="button">Select all</button><span aria-hidden="true">/</span><button id="deselectAll" class="text-button" type="button">Deselect all</button></div></div>
+              <div class="metadata-toolbar"><div><h3 id="summaryTitle">Metadata found</h3><p id="selectionCount" aria-live="polite"></p></div><div class="selection-actions"><button id="selectAll" class="text-button" type="button">Select all</button><span aria-hidden="true">/</span><button id="deselectAll" class="text-button" type="button">Deselect all</button></div></div>
               <p id="summaryCopy" class="metadata-help">Checked items will be removed. Everything else stays.</p>
               <div class="finding-grid">
                 <article class="finding-panel"><div class="panel-heading"><h3>Personal &amp; other metadata</h3><span id="privacyCount" class="count"></span></div><div id="privacyFindings" class="finding-list"></div></article>
@@ -70,34 +67,33 @@
               <p class="selection-note"><svg class="icon"><use href="#icon-sliders"/></svg>Selections remove whole metadata blocks, including the tags inside.</p>
             </div>
             <div id="detailsView" role="tabpanel" aria-labelledby="detailsTab" hidden>
-              <div class="details-heading"><h3>A closer look.</h3><p>File information and the metadata we could read.</p></div>
+              <div class="details-heading"><h3>Photo details</h3><p>File information and the metadata we could read.</p></div>
               <p id="scanWarnings" class="scan-warning" role="status"></p>
               <div id="photoProperties" class="photo-properties"></div>
               <details class="photo-inspector"><summary>All decoded metadata</summary><p>Some proprietary values may be unreadable. File names and file-system dates are shown for reference.</p><pre id="photoData"></pre></details>
               <details class="photo-inspector"><summary>Image structure</summary><p>These parts are kept to preserve the image.</p><pre id="structureData"></pre></details>
             </div>
-            <div class="clean-bar"><div><svg class="icon"><use href="#icon-lock"/></svg><p id="cleanDescription">Your original stays untouched.</p></div><button id="cleanBtn" class="primary-button" type="button"><span>Download clean copy</span><svg class="icon"><use href="#icon-download"/></svg></button></div>
+            <div class="clean-bar"><div><p id="cleanDescription">Download a copy with your changes.</p></div><button id="cleanBtn" class="primary-button" type="button"><span>Download clean copy</span><svg class="icon"><use href="#icon-download"/></svg></button></div>
           </div>
         </div>
       </section>
     </section>
 
-    <div class="proof-row" aria-label="Product details"><span><svg class="icon"><use href="#icon-check"/></svg>No uploads</span><span><svg class="icon"><use href="#icon-check"/></svg>No account</span><span><svg class="icon"><use href="#icon-check"/></svg>Original quality</span></div>
     <section id="how-it-works" class="how-section" aria-labelledby="how-title">
-      <div class="section-heading"><span class="eyebrow">LESS TO SHARE. NOTHING TO LOSE.</span><h2 id="how-title">Three steps. A little more privacy.</h2></div>
+      <div class="section-heading"><h2 id="how-title">How it works</h2></div>
       <div class="plain-notes">
-        <article><span class="note-number">01 <span></span></span><h3>Bring your photos.</h3><p>Add one image or a whole batch. Everything happens on your device.</p></article>
-        <article><span class="note-number">02 <span></span></span><h3>Leave a little behind.</h3><p>Review what’s attached. Keep what matters and select what doesn’t.</p></article>
-        <article><span class="note-number">03 <span></span></span><h3>Take a cleaner copy.</h3><p>Download your photos with less attached. No resizing or recompression.</p></article>
+        <article><span class="note-number">01 <span></span></span><h3>Add photos</h3><p>Choose JPEG, PNG, or WebP files to see what metadata they contain.</p></article>
+        <article><span class="note-number">02 <span></span></span><h3>Review the details</h3><p>Select the metadata you want removed. Leave anything you want to keep unchecked.</p></article>
+        <article><span class="note-number">03 <span></span></span><h3>Download</h3><p>Save each photo separately or download them all in a ZIP.</p></article>
       </div>
     </section>
     <section class="faq" aria-label="A few useful details">
       <details><summary>What can ClearFrame remove?</summary><p>Metadata blocks such as EXIF (camera, dates, GPS, and thumbnails), XMP, IPTC, text, color profiles, and extra container data in JPEG, PNG, and WebP images. Some proprietary values can’t be decoded, but their blocks are still listed. Data hidden in pixels is outside the scanner’s scope.</p></details>
       <details><summary>Will my photo look the same?</summary><p>Your image is never resized or recompressed, and your original is untouched. Removing orientation tags or color profiles can change how the copy displays, so color and display blocks are kept by default.</p></details>
-      <details><summary>Do my photos ever leave my device?</summary><p>No. Scanning and cleaning happen in this browser. Your photos aren’t uploaded or stored on a server.</p></details>
+      <details><summary>Are my photos uploaded?</summary><p>No. Scanning and cleaning happen in this browser. Your photos aren’t uploaded or stored on a server.</p></details>
     </section>
   </main>
-  <footer><a class="brand footer-brand" href="#"><svg class="icon"><use href="#icon-frame"/></svg>clearframe.</a><span>Good photos. Fewer extras.</span><a href="#scanner">Back to cleaner <span aria-hidden="true">↑</span></a></footer>
+  <footer><a class="brand footer-brand" href="#"><svg class="icon"><use href="#icon-frame"/></svg>clearframe.</a><a href="#scanner">Back to cleaner <span aria-hidden="true">↑</span></a></footer>
   <div id="toast" class="toast" role="status"></div>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="vendor/exifr.js"></script>
