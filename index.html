@@ -3,71 +3,105 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#090b0f" />
-  <meta name="description" content="Check and remove private metadata from images without uploading them." />
-  <title>ClearFrame — Clean image metadata</title>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%235b8cff'/%3E%3Cpath d='M9 12V9h5M18 9h5v5M23 18v5h-5M14 23H9v-5' fill='none' stroke='white' stroke-width='2.3' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='16' r='2.2' fill='white'/%3E%3C/svg%3E" />
+  <meta name="theme-color" content="#101010" />
+  <meta name="description" content="See what your photos share. Choose which metadata to remove, privately in your browser." />
+  <title>ClearFrame — A little less attached.</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23ededeb'/%3E%3Cpath d='M9 13V9h4M19 9h4v4M23 19v4h-4M13 23H9v-4' fill='none' stroke='%23101010' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="page-rails" aria-hidden="true"></div>
+  <svg class="icon-library" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><defs>
+    <symbol id="icon-frame" viewBox="0 0 24 24"><path d="M8 3H3v5m13-5h5v5M3 16v5h5m8 0h5v-5"/><rect x="8" y="8" width="8" height="8" rx="2"/></symbol>
+    <symbol id="icon-plus" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></symbol>
+    <symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol>
+    <symbol id="icon-download" viewBox="0 0 24 24"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></symbol>
+    <symbol id="icon-lock" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></symbol>
+    <symbol id="icon-check" viewBox="0 0 24 24"><path d="m5 12 4 4L19 6"/></symbol>
+    <symbol id="icon-image" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8" cy="8" r="1.5"/><path d="m3 17 5-5 4 4 4-6 5 7"/></symbol>
+    <symbol id="icon-sliders" viewBox="0 0 24 24"><path d="M4 7h7m4 0h5M4 17h3m4 0h9"/><circle cx="13" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></symbol>
+  </defs></svg>
+  <a class="skip-link" href="#scanner">Skip to scanner</a>
   <header class="topbar">
-    <a class="brand" href="#" aria-label="ClearFrame home"><span class="brand-mark"><i></i></span>ClearFrame</a>
-    <div class="header-meta"><span class="live-dot"></span>On-device <b>v1.0</b></div>
+    <a class="brand" href="#" aria-label="ClearFrame home"><svg class="icon brand-mark"><use href="#icon-frame"/></svg>clearframe<span class="brand-period">.</span></a>
+    <nav aria-label="Main navigation"><a href="#scanner" class="nav-link active">Cleaner</a><a href="#how-it-works" class="nav-link">How it works</a></nav>
+    <span class="header-meta"><span class="live-dot"></span>All local. All yours.</span>
   </header>
 
   <main>
     <section class="hero" aria-labelledby="page-title">
-      <div class="hero-kicker"><span>01</span><p>PRIVATE IMAGE TOOL</p></div>
-      <h1 id="page-title">See what your<br><em>image carries.</em></h1>
-      <div class="hero-bottom">
-        <p>Check one image or a whole batch for location, device, date, and editing details. Then download clean copies. Your files never leave the browser.</p>
-        <button class="hero-button" type="button" data-pick><span>Choose images</span><b>↗</b></button>
-      </div>
+      <span class="hero-kicker"><svg class="icon"><use href="#icon-lock"/></svg>A little less attached.</span>
+      <h1 id="page-title">Share the photo.<br><span>Keep the details.</span></h1>
+      <p>Location, camera, dates. Your photos carry more than pixels.<br class="desktop-break"> Choose what stays, clear what doesn’t. Right here in your browser.</p>
     </section>
 
-    <div class="proof-row" aria-label="Product details"><span>Nothing uploaded</span><span>No account</span><span>Original pixels kept</span></div>
-
-    <section class="tool-shell" aria-label="Image metadata scanner">
-      <div class="tool-bar"><div><span class="tool-dot"></span>Scanner</div><small>JPEG · PNG · WEBP</small></div>
+    <section id="scanner" class="tool-shell" aria-label="Image metadata scanner" tabindex="-1">
+      <div class="tool-bar"><div><svg class="icon"><use href="#icon-frame"/></svg>Photo cleaner</div><span class="format-label">JPEG <i>·</i> PNG <i>·</i> WEBP</span></div>
+      <input id="fileInput" type="file" multiple accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" hidden />
       <div class="workspace">
         <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Choose images or drop them here">
-          <input id="fileInput" type="file" multiple accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" hidden />
-          <div class="upload-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 31V13m0 0-7 7m7-7 7 7M11 32v4a3 3 0 0 0 3 3h20a3 3 0 0 0 3-3v-4"/></svg></div>
-          <h2>Drop your images here</h2>
-          <p>or <button id="browseBtn" type="button">browse your files</button></p>
-          <small>Processed locally</small>
+          <div class="photo-stack" aria-hidden="true">
+            <div class="stack-card stack-back"><span></span><span></span><span></span></div>
+            <div class="stack-card stack-front"><svg viewBox="0 0 120 86" fill="none"><rect width="120" height="86" rx="5" fill="#252729"/><circle cx="86" cy="24" r="9" fill="#b9bdb6"/><path d="M0 74 36 32 74 75 95 50 120 76v10H0Z" fill="#555c56"/><path d="m0 78 37-25 35 33H0Z" fill="#747b72"/><path d="m50 86 39-33 31 29v4Z" fill="#949b8d"/></svg><span class="photo-caption">a moment, just yours</span></div>
+            <span class="stack-badge"><svg class="icon"><use href="#icon-check"/></svg></span>
+          </div>
+          <h2>A fresh start for your photos.</h2>
+          <p>Drop images here, or pick a few from your device.</p>
+          <button id="browseBtn" class="primary-button" type="button"><svg class="icon"><use href="#icon-plus"/></svg><span>Choose photos</span></button>
+          <small>One photo or a whole collection.</small>
         </div>
+        <div class="workspace-bottom"><span><svg class="icon"><use href="#icon-lock"/></svg>Nothing uploaded. Ever.</span><button id="sampleBtn" class="sample-button" type="button">Try a sample<svg class="icon"><use href="#icon-arrow"/></svg></button></div>
       </div>
 
-      <section id="results" class="results" aria-live="polite" hidden>
-        <div class="batch-head"><div><p class="eyebrow">BATCH SCAN</p><h2><span id="batchCount">0</span> images ready</h2></div><div class="batch-actions"><button id="addMore" class="text-button" type="button">Add more</button><button id="startOver" class="text-button" type="button">Clear all</button></div></div>
+      <section id="results" class="results" aria-label="Photo review" hidden>
+        <div class="batch-head"><div><span class="eyebrow">YOUR COLLECTION</span><h2><span id="batchCount">0</span> <span id="batchNoun">photos</span></h2></div><div class="batch-actions"><button id="addMore" class="secondary-button" type="button"><svg class="icon"><use href="#icon-plus"/></svg>Add photos</button><button id="startOver" class="text-button" type="button">Start over</button></div></div>
         <div class="batch-layout">
-          <aside class="batch-panel" aria-label="Uploaded images"><div id="batchList" class="batch-list"></div><button id="cleanAllBtn" class="batch-download" type="button"><span>Clean all</span><b>ZIP ↓</b></button></aside>
+          <aside class="batch-panel" aria-label="Uploaded images"><div class="sidebar-label">PHOTOS <span>Choose to review</span></div><div id="batchList" class="batch-list"></div><button id="cleanAllBtn" class="batch-download" type="button"><span>Download collection</span><b>ZIP ↓</b></button><p class="batch-hint">Uses each photo’s selections.</p></aside>
           <div class="detail-panel">
-        <div class="result-top"><div class="file-card"><img id="preview" alt="Selected image preview" /><div><p id="fileName"></p><span id="fileDetails"></span></div></div><span class="selected-label">SELECTED</span></div>
-        <div class="score-row"><div class="score-ring" id="scoreRing"><strong id="score">—</strong><span>PRIVACY<br>SCORE</span></div><div><p class="eyebrow">SCAN COMPLETE</p><h2 id="summaryTitle">Review detected details</h2><p id="summaryCopy"></p></div></div>
-        <div class="finding-grid">
-          <article class="finding-panel"><div class="panel-heading"><div><span class="step">01</span><h3>Private details</h3></div><span id="privacyCount" class="count"></span></div><div id="privacyFindings" class="finding-list"></div></article>
-          <article class="finding-panel"><div class="panel-heading"><div><span class="step">02</span><h3>Content credentials</h3></div><span id="provCount" class="count"></span></div><div id="provenanceFindings" class="finding-list"></div><p class="provenance-note">We show provenance details for transparency. ClearFrame doesn’t target them for removal.</p></article>
-        </div>
-        <div class="clean-bar"><div><span class="step">03</span><div><h3>Make a clean copy</h3><p id="cleanDescription">Private metadata will be removed. Image pixels stay unchanged.</p></div></div><button id="cleanBtn" class="primary-button" type="button"><span>Clean this image</span><b>↓</b></button></div>
+            <div class="result-top"><div class="file-card"><img id="preview" alt="Selected image preview" /><div><p id="fileName"></p><span id="fileDetails"></span></div></div><span class="selected-label"><span class="live-dot"></span>Scanned locally</span></div>
+            <div class="review-tabs" role="tablist" aria-label="Photo review views"><button id="cleanTab" class="review-tab active" type="button" role="tab" aria-selected="true" aria-controls="cleanView" tabindex="0"><svg class="icon"><use href="#icon-sliders"/></svg>Choose what to remove</button><button id="detailsTab" class="review-tab" type="button" role="tab" aria-selected="false" aria-controls="detailsView" tabindex="-1"><svg class="icon"><use href="#icon-image"/></svg>Photo details</button></div>
+            <div id="cleanView" role="tabpanel" aria-labelledby="cleanTab">
+              <div class="metadata-toolbar"><div><h3 id="summaryTitle">What’s attached</h3><p id="selectionCount" aria-live="polite"></p></div><div class="selection-actions"><button id="selectAll" class="text-button" type="button">Select all</button><span aria-hidden="true">/</span><button id="deselectAll" class="text-button" type="button">Deselect all</button></div></div>
+              <p id="summaryCopy" class="metadata-help">Checked items will be removed. Everything else stays.</p>
+              <div class="finding-grid">
+                <article class="finding-panel"><div class="panel-heading"><h3>Personal &amp; other metadata</h3><span id="privacyCount" class="count"></span></div><div id="privacyFindings" class="finding-list"></div></article>
+                <details class="finding-panel optional-panel"><summary class="panel-heading"><h3>Content credentials</h3><span id="provCount" class="count"></span><span class="kept-label">Kept by default</span></summary><div id="provenanceFindings" class="finding-list"></div><p class="provenance-note">Removing credentials discards provenance. Other edits may also invalidate signatures. Credentials are detected, not verified.</p></details>
+                <details class="finding-panel optional-panel"><summary class="panel-heading"><h3>Color &amp; display</h3><span id="appearanceCount" class="count"></span><span class="kept-label">Kept by default</span></summary><div id="appearanceFindings" class="finding-list"></div><p class="provenance-note">Removing color profiles, density, or EXIF orientation can change appearance or rotation. Essential display data is kept.</p></details>
+              </div>
+              <p class="selection-note"><svg class="icon"><use href="#icon-sliders"/></svg>Selections remove whole metadata blocks, including the tags inside.</p>
+            </div>
+            <div id="detailsView" role="tabpanel" aria-labelledby="detailsTab" hidden>
+              <div class="details-heading"><h3>A closer look.</h3><p>File information and the metadata we could read.</p></div>
+              <p id="scanWarnings" class="scan-warning" role="status"></p>
+              <div id="photoProperties" class="photo-properties"></div>
+              <details class="photo-inspector"><summary>All decoded metadata</summary><p>Some proprietary values may be unreadable. File names and file-system dates are shown for reference.</p><pre id="photoData"></pre></details>
+              <details class="photo-inspector"><summary>Image structure</summary><p>These parts are kept to preserve the image.</p><pre id="structureData"></pre></details>
+            </div>
+            <div class="clean-bar"><div><svg class="icon"><use href="#icon-lock"/></svg><p id="cleanDescription">Your original stays untouched.</p></div><button id="cleanBtn" class="primary-button" type="button"><span>Download clean copy</span><svg class="icon"><use href="#icon-download"/></svg></button></div>
           </div>
         </div>
       </section>
     </section>
 
-    <section class="plain-notes" aria-label="How ClearFrame works">
-      <div><span>01</span><h3>Local</h3><p>Your image stays in this tab.</p></div>
-      <div><span>02</span><h3>Lossless</h3><p>No resizing or recompression.</p></div>
-      <div><span>03</span><h3>Honest</h3><p>Metadata cleaning isn’t an AI-detector bypass.</p></div>
+    <div class="proof-row" aria-label="Product details"><span><svg class="icon"><use href="#icon-check"/></svg>No uploads</span><span><svg class="icon"><use href="#icon-check"/></svg>No account</span><span><svg class="icon"><use href="#icon-check"/></svg>Original quality</span></div>
+    <section id="how-it-works" class="how-section" aria-labelledby="how-title">
+      <div class="section-heading"><span class="eyebrow">LESS TO SHARE. NOTHING TO LOSE.</span><h2 id="how-title">Three steps. A little more privacy.</h2></div>
+      <div class="plain-notes">
+        <article><span class="note-number">01 <span></span></span><h3>Bring your photos.</h3><p>Add one image or a whole batch. Everything happens on your device.</p></article>
+        <article><span class="note-number">02 <span></span></span><h3>Leave a little behind.</h3><p>Review what’s attached. Keep what matters and select what doesn’t.</p></article>
+        <article><span class="note-number">03 <span></span></span><h3>Take a cleaner copy.</h3><p>Download your photos with less attached. No resizing or recompression.</p></article>
+      </div>
+    </section>
+    <section class="faq" aria-label="A few useful details">
+      <details><summary>What can ClearFrame remove?</summary><p>Metadata blocks such as EXIF (camera, dates, GPS, and thumbnails), XMP, IPTC, text, color profiles, and extra container data in JPEG, PNG, and WebP images. Some proprietary values can’t be decoded, but their blocks are still listed. Data hidden in pixels is outside the scanner’s scope.</p></details>
+      <details><summary>Will my photo look the same?</summary><p>Your image is never resized or recompressed, and your original is untouched. Removing orientation tags or color profiles can change how the copy displays, so color and display blocks are kept by default.</p></details>
+      <details><summary>Do my photos ever leave my device?</summary><p>No. Scanning and cleaning happen in this browser. Your photos aren’t uploaded or stored on a server.</p></details>
     </section>
   </main>
-
-  <footer><span>ClearFrame</span><p>Files stay yours.</p><button type="button" data-pick>Open scanner ↑</button></footer>
+  <footer><a class="brand footer-brand" href="#"><svg class="icon"><use href="#icon-frame"/></svg>clearframe.</a><span>Good photos. Fewer extras.</span><a href="#scanner">Back to cleaner <span aria-hidden="true">↑</span></a></footer>
   <div id="toast" class="toast" role="status"></div>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="vendor/exifr.js"></script>
+  <script src="metadata.js"></script>
   <script src="app.js"></script>
-  <script>document.querySelectorAll('[data-pick]').forEach(button=>button.addEventListener('click',()=>document.querySelector('#fileInput').click()));</script>
 </body>
 </html>
