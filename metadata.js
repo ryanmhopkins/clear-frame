@@ -116,7 +116,37 @@
       }
       if (p !== limit) fail();
       trailing(limit);
-    } else throw new Error('Choose a JPEG, PNG, or WebP image.');
+    } else if (['GIF87a','GIF89a'].includes(ascii(bytes,0,6))) {
+      format = 'GIF';
+      if (bytes.length < 14) fail();
+      width = bytes[6] | bytes[7]<<8; height = bytes[8] | bytes[9]<<8;
+      let p = 13 + ((bytes[10]&128) ? 3 * (2 ** ((bytes[10]&7)+1)) : 0), ended = false;
+      if (!width || !height || p >= bytes.length) fail();
+      structure.push({type:'GIF screen & global palette',bytes:p});
+      function subblocks() {
+        while (p < bytes.length) { const n=bytes[p++]; if(!n)return; p+=n; if(p>bytes.length)fail(); }
+        fail();
+      }
+      while(p<bytes.length) {
+        const start=p, marker=bytes[p++];
+        if(marker===59){ended=true;trailing(p);break;}
+        if(marker===44){
+          if(p+9>bytes.length)fail();
+          const packed=bytes[p+8];p+=9;
+          if(packed&128)p+=3*(2**((packed&7)+1));
+          if(p>=bytes.length)fail();p++;subblocks();
+          structure.push({type:'GIF image frame & local palette',bytes:p-start});
+        } else if(marker===33){
+          if(p>=bytes.length)fail();const label=bytes[p++],payload=p;
+          const app=label===255?ascii(bytes,p+1,p+12):'';
+          subblocks();
+          if(label===249 || label===1 || ['NETSCAPE2.0','ANIMEXTS1.0'].includes(app))
+            structure.push({type:'GIF animation, transparency or text rendering',bytes:p-start});
+          else add(start,p,label===254?'GIF comment':app==='XMP DataXMP'?'XMP metadata':app==='ICCRGBG1012'?'ICC color profile':'GIF application metadata',label===254?'gif-comment':'gif-extension',app==='ICCRGBG1012'?'appearance':'private',true,payload);
+        } else fail();
+      }
+      if(!ended)fail();
+    } else throw new Error('This image format needs the extended photo engine.');
     return {format,width,height,found,structure,clean(selected = new Set(found.filter(x=>x.selected).map(x=>x.id))) {
       const removed = found.filter(x=>x.removable && selected.has(x.id));
       const output = removeRanges(bytes,removed);

@@ -174,3 +174,13 @@ footer .creator-link:hover, footer .creator-link:focus-visible { color: var(--ac
 .faq summary, .faq .t-acc-head { font-size: 14px; font-weight: 550; color: #deded8; padding-top: 19px; padding-bottom: 19px; }
 .faq p { font-size: 14px; line-height: 1.8; color: #b5b5b0; }
 @media (max-width: 680px) { .section-heading h2 { font-size: 23px; } }
+
+.processing-note {color:var(--accent);font-size:14px;line-height:1.7;margin:20px 0;white-space:pre-line;overflow-wrap:anywhere;}
+.file-errors {color:#e5b7ad;}
+.preview-fallback {width:76px;flex-shrink:0;text-align:center;font-size:11px;line-height:1.4;color:#aaa;}
+
+.format-note {font-size:13px;line-height:1.7;color:#b5b5b0;margin:10px 0;}
+.processing-note {padding:0 20px;}
+
+.batch-item.no-preview {grid-template-columns:minmax(0,1fr) 12px;}
+.format-note {margin:0 22px 12px;}

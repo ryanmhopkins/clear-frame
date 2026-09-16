@@ -27,7 +27,7 @@ test('select/deselect all, individual choice, per-image persistence, download an
   w.document.querySelectorAll('.batch-item')[1].click();assert.match(query('#selectionCount').textContent,/2 of 2/);
   w.document.querySelectorAll('.batch-item')[0].click();assert.match(query('#selectionCount').textContent,/1 of 2/);
   const downloads=[];w.downloadBlob=(blob,name)=>downloads.push({blob,name});
-  query('#cleanBtn').click();
+  await w.clean();
   const exported=new Uint8Array(await downloads[0].blob.arrayBuffer());
   assert.deepEqual(metadata.scan(exported).found.map(x=>x.type),['APP3']);
   const packaged=[];
@@ -35,7 +35,7 @@ test('select/deselect all, individual choice, per-image persistence, download an
   await w.cleanAll();assert.equal(packaged.length,2);assert.notEqual(packaged[0].name,packaged[1].name);
   assert.equal(metadata.scan(packaged[0].data).found.length,1);assert.equal(metadata.scan(packaged[1].data).found.length,0);
   query('#bulkSelect').click();assert.match(query('#selectionCount').textContent,/2 of 2/);assert.equal(query('#bulkSelect').getAttribute('aria-checked'),'true');
-  query('#bulkSelect').click();query('#cleanBtn').click();
+  query('#bulkSelect').click();await w.clean();
   assert.deepEqual(new Uint8Array(await downloads.at(-1).blob.arrayBuffer()),jpeg);
   query('#startOver').click();assert.equal(query('#results').hidden,true);
  }finally{dom.window.close()}
@@ -82,4 +82,32 @@ test('animated checkmarks stay synchronized with native inputs and bulk actions'
   query('#bulkSelect').click();assert.equal(visual.getAttribute('aria-checked'),'false');assert.equal(check.checked,false);
   w.toast('Download ready');assert.equal(query('#toast').classList.contains('is-open'),true);
  }finally{dom.window.close()}
+});
+
+test('async cleaning failures block individual and ZIP downloads and restore controls',async()=>{
+ const {dom,w,query}=setup();try{
+  await w.handleFiles([file('photo.jpg')]);
+  const downloads=[];w.downloadBlob=(...args)=>downloads.push(args);
+  w.getActive().report.clean=async()=>{throw new Error('Image verification failed.');};
+  await w.clean();assert.equal(downloads.length,0);assert.match(query('#fileErrors').textContent,/verification failed/);assert.equal(query('#cleanBtn').disabled,false);
+  w.JSZip=class {file(){} async generateAsync(){throw new Error('Must not package failed images');}};
+  await w.cleanAll();assert.equal(downloads.length,0);assert.match(query('#fileErrors').textContent,/No ZIP was downloaded/);assert.equal(query('#startOver').disabled,false);
+ }finally{dom.window.close();}
+});
+
+test('file extension fallback handles empty MIME types and shows malformed-file errors',async()=>{
+ const {dom,w,query}=setup();try{
+  await w.handleFiles([{...file('photo.JPG'),type:''}]);assert.equal(query('#batchCount').textContent,'1');
+  await w.handleFiles([{...file('broken.gif'),type:'',arrayBuffer:async()=>new Uint8Array([71,73,70,56,57,97]).buffer}]);
+  assert.match(query('#fileErrors').textContent,/broken.gif/);assert.equal(query('#batchCount').textContent,'1');
+  const entry=w.getActive();assert.equal(entry.file.name,'photo.JPG');
+ }finally{dom.window.close();}
+});
+
+test('extended decoder fields appear in readable photo properties',async()=>{
+ const {dom,w,query}=setup();try{
+  await w.handleFiles([file('photo.jpg')]);
+  const entry=w.getActive();entry.decoded.details={'IFD0:Make':'Sony','IFD0:Model':'ILCE-7S','GPS:GPSLatitude':40.71};
+  w.renderPhotoData(entry);assert.match(query('#photoProperties').textContent,/Sony/);assert.match(query('#photoProperties').textContent,/40.71/);
+ }finally{dom.window.close();}
 });

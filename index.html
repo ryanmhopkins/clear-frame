@@ -33,8 +33,10 @@
     </section>
 
     <section id="scanner" class="tool-shell" aria-label="Image metadata scanner" tabindex="-1">
-      <div class="tool-bar"><div><svg class="icon"><use href="#icon-frame"/></svg>Photo cleaner</div><span class="format-label">JPEG <i>·</i> PNG <i>·</i> WEBP</span></div>
-      <input id="fileInput" type="file" multiple accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" hidden />
+      <div class="tool-bar"><div><svg class="icon"><use href="#icon-frame"/></svg>Photo cleaner</div><span class="format-label">PHOTOS <i>·</i> RAW</span></div>
+      <input id="fileInput" type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif,image/heic,image/heif,image/avif,image/tiff,.jpg,.jpeg,.png,.webp,.gif,.heic,.heif,.avif,.tif,.tiff,.dng,.cr2,.nef,.arw" hidden />
+    <p id="scanStatus" class="processing-note" role="status" hidden></p>
+    <p id="fileErrors" class="processing-note file-errors" role="alert" hidden></p>
       <div class="workspace">
         <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Choose images or drop them here">
           <div class="photo-stack" aria-hidden="true">
@@ -53,17 +55,17 @@
         <div class="batch-layout">
           <aside class="batch-panel" aria-label="Uploaded images"><div class="sidebar-label">PHOTOS <span>Choose to review</span></div><div id="batchList" class="batch-list"></div><button id="cleanAllBtn" class="batch-download" type="button"><span>Download all</span><b>ZIP ↓</b></button><p class="batch-hint">Uses each photo’s selections.</p></aside>
           <div class="detail-panel">
-            <div class="result-top"><div class="file-card"><img id="preview" alt="Selected image preview" /><div><p id="fileName"></p><span id="fileDetails"></span></div></div></div>
+            <div class="result-top"><div class="file-card"><img id="preview" alt="Selected image preview" /><span id="previewFallback" class="preview-fallback" hidden>Preview unavailable</span><div><p id="fileName"></p><span id="fileDetails"></span></div></div></div>
             <div class="review-tabs t-tabs" role="tablist" aria-label="Photo review views"><span class="t-tabs-pill" aria-hidden="true"></span><button id="cleanTab" class="review-tab t-tab active" type="button" role="tab" aria-selected="true" aria-controls="cleanView" tabindex="0"><svg class="icon"><use href="#icon-sliders"/></svg>Choose what to remove</button><button id="detailsTab" class="review-tab t-tab" type="button" role="tab" aria-selected="false" aria-controls="detailsView" tabindex="-1"><svg class="icon"><use href="#icon-image"/></svg>Photo details</button></div>
             <div id="cleanView" role="tabpanel" aria-labelledby="cleanTab">
               <div class="metadata-toolbar"><div><h3 id="summaryTitle">Metadata found</h3><p id="selectionCount" aria-live="polite"></p></div><div class="selection-actions bulk-selection"><div><span id="bulkSelectLabel">Select all</span><small id="bulkSelectState">None selected</small></div><button id="bulkSelect" class="t-toggle" type="button" role="switch" aria-checked="false" aria-labelledby="bulkSelectLabel" aria-describedby="bulkSelectState" data-on="false"><span class="t-toggle-thumb" aria-hidden="true"><svg viewBox="0 0 12 12"><path d="m3 6 2 2 4-4"/></svg><span class="partial-mark"></span></span></button></div></div>
-              <p id="summaryCopy" class="metadata-help">Checked items will be removed. Everything else stays.</p>
+              <p id="formatNote" class="format-note" hidden></p><p id="summaryCopy" class="metadata-help">Checked items will be removed. Everything else stays.</p>
               <div class="finding-grid">
                 <article class="finding-panel"><div class="panel-heading"><h3>Personal &amp; other metadata</h3><span id="privacyCount" class="count"></span></div><div id="privacyFindings" class="finding-list"></div></article>
                 <details class="finding-panel optional-panel"><summary class="panel-heading"><h3>Content credentials</h3><span id="provCount" class="count"></span><span class="kept-label">Kept by default</span></summary><div id="provenanceFindings" class="finding-list"></div><p class="provenance-note">Removing credentials discards provenance. Other edits may also invalidate signatures. Credentials are detected, not verified.</p></details>
                 <details class="finding-panel optional-panel"><summary class="panel-heading"><h3>Color &amp; display</h3><span id="appearanceCount" class="count"></span><span class="kept-label">Kept by default</span></summary><div id="appearanceFindings" class="finding-list"></div><p class="provenance-note">Removing color profiles, density, or EXIF orientation can change appearance or rotation. Essential display data is kept.</p></details>
               </div>
-              <p class="selection-note"><svg class="icon"><use href="#icon-sliders"/></svg>Selections remove whole metadata blocks, including the tags inside.</p>
+              <p class="selection-note"><svg class="icon"><use href="#icon-sliders"/></svg><span id="selectionNote">Selections remove whole metadata blocks, including the tags inside.</span></p>
             </div>
             <div id="detailsView" role="tabpanel" aria-labelledby="detailsTab" hidden>
               <div class="details-heading"><h3>Photo details</h3><p>File information and the metadata we could read.</p></div>
@@ -81,18 +83,20 @@
     <section id="how-it-works" class="how-section" aria-labelledby="how-title">
       <div class="section-heading"><h2 id="how-title">How it works</h2></div>
       <div class="plain-notes">
-        <article><span class="note-number">01 <span></span></span><h3>Add photos</h3><p>Choose JPEG, PNG, or WebP files to see what metadata they contain.</p></article>
+        <article><span class="note-number">01 <span></span></span><h3>Add photos</h3><p>Choose your photos to see what metadata they contain, including supported RAW files.</p></article>
         <article><span class="note-number">02 <span></span></span><h3>Review the details</h3><p>Select the metadata you want removed. Leave anything you want to keep unchecked.</p></article>
         <article><span class="note-number">03 <span></span></span><h3>Download</h3><p>Save each photo separately or download them all in a ZIP.</p></article>
       </div>
     </section>
     <section class="faq" aria-label="A few useful details">
       <details><summary>What is photo metadata?</summary><p>It’s extra information saved inside an image, like the camera used, when it was taken, editing software, or sometimes a GPS location. EXIF is one common type. These details can be useful in your library, but you may want to remove them before sharing a photo.</p></details>
-      <details><summary>Which files and details can I clean?</summary><p>ClearFrame supports JPEG, PNG, and WebP images. It lists metadata blocks such as EXIF, XMP, IPTC, text, color profiles, and extra container data. Some proprietary details may appear as a block without readable values. Documents, videos, and other image formats aren’t supported.</p></details>
+      <details><summary>Which files and details can I clean?</summary><p>ClearFrame supports JPEG, PNG, WebP, GIF, HEIC, HEIF, AVIF, TIFF, and RAW files in DNG, CR2, NEF, and ARW formats. Available cleaning options depend on the format. Documents and videos aren’t supported.</p></details>
       <details><summary>Can I remove the location from a photo?</summary><p>Yes, when the location is stored in a removable metadata block. GPS coordinates are often part of EXIF, so removing that block also removes its other details, such as camera settings and dates. Check the listed blocks for other location information too. Cleaning metadata won’t hide landmarks, addresses, or anything visible in the photo.</p></details>
-      <details><summary>Can I choose what to keep?</summary><p>Yes. Select the blocks you want removed and leave the rest unchecked, or use the Select all switch. Your choices are saved separately for each photo. Selection works by block, so individual fields inside one EXIF block can’t be removed separately.</p></details>
+      <details><summary>Can I choose what to keep?</summary><p>Yes. Select the blocks you want removed and leave the rest unchecked, or use the Select all switch. Your choices are saved separately for each photo. JPEG, PNG, WebP, and GIF cleaning works by block. The other formats offer selected metadata groups and individual standard fields.</p></details>
       <details><summary>Will my photo look the same?</summary><p>ClearFrame doesn’t resize or recompress your image, and your original stays untouched. Removing an orientation tag or color profile can change how the downloaded copy displays. Color and display blocks are kept by default; check the details before removing EXIF, which can include orientation.</p></details>
-      <details><summary>Can I clean several photos at once?</summary><p>Yes. Add multiple photos, review the choices for each, then save them individually or together in a ZIP. Large batches can use a lot of browser memory. If things slow down, try fewer files at a time.</p></details>
+      <details><summary>Can I clean several photos at once?</summary><p>Yes. Add multiple photos, review the choices for each, then save them individually or together in a ZIP. Each photo can be up to 256 MB. Large batches can use a lot of browser memory. If things slow down, try fewer files at a time.</p></details>
+      <details><summary>How does RAW cleaning work?</summary><p>RAW photos need camera settings and calibration data to display correctly. ClearFrame keeps those, along with maker notes and embedded previews, while letting you remove listed details such as GPS, captions, author names, and dates. Kept data may still contain identifying information. Select all selects the available cleaning options; it doesn’t strip every piece of data from a RAW file.</p></details>
+      <details><summary>Why might a photo have no preview?</summary><p>Your browser may not display HEIC, TIFF, or RAW images. You can still review and clean a supported file without a preview. The downloaded copy keeps its original format, so open it in an app that supports that format.</p></details>
       <details><summary>Are my photos uploaded?</summary><p>No. Scanning and cleaning happen in your browser. Your photos aren’t uploaded or stored on a server.</p></details>
       <details><summary>What about AI tags and Content Credentials?</summary><p>AI tools sometimes save prompts or software details in text, EXIF, or XMP blocks. ClearFrame can remove those blocks when it finds them. It also identifies some Content Credentials (C2PA) data, but doesn’t verify its authenticity. Removing it loses that provenance, and other edits can invalidate its signature. Visible watermarks and data hidden in pixels aren’t removed.</p></details>
       <details><summary>How can I check the cleaned photo?</summary><p>Add the downloaded copy to ClearFrame to scan it again and see which blocks remain. This checks what the scanner can detect; it isn’t a guarantee that every proprietary tag or hidden piece of information is gone. Your filename and file dates are separate from embedded metadata and may still appear on your device.</p></details>
@@ -104,6 +108,7 @@
   <script src="vendor/exifr.js"></script>
   <script src="metadata.js"></script>
   <script src="motion.js"></script>
+  <script src="extended-client.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
