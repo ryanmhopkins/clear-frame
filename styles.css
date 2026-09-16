@@ -150,7 +150,7 @@ footer .creator-link:hover, footer .creator-link:focus-visible { color: var(--ac
 .bulk-selection { gap: 12px; }
 .bulk-selection > div { display: flex; flex-direction: column; gap: 2px; }
 #bulkSelectLabel { font-size: 11px; color: var(--text); }
-#bulkSelectState { font-size: 9px; color: var(--muted); }
+#bulkSelectState { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; border: 0; }
 #bulkSelect {
   --toggle-travel: 22px; --toggle-ov1: 2px; --toggle-ov2: 1px; --toggle-track: 180ms;
   width: 48px; height: 26px; padding: 3px; border: 1px solid #414956; border-radius: 99px;
