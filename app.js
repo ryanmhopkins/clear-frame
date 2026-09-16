@@ -9,14 +9,20 @@ function renderList(el,items,empty){
     const row=document.createElement('div');row.className='finding-item metadata-item';
     const label=document.createElement('label');label.className='metadata-choice';
     const check=document.createElement('input');check.type='checkbox';check.checked=entry.selected.has(x.id);check.disabled=!x.removable;
-    check.setAttribute('aria-label',`Remove ${x.label}`);
-    check.onchange=()=>{check.checked?entry.selected.add(x.id):entry.selected.delete(x.id);updateSelection();renderBatch()};
+    check.dataset.metadataId=x.id;check.setAttribute('aria-label',`Remove ${x.label}`);
+    check.onchange=()=>{check.checked?entry.selected.add(x.id):entry.selected.delete(x.id);visual.setAttribute('aria-checked',String(check.checked));updateSelection();renderBatch()};
+    const control=document.createElement('span');control.className='check-control';
+    const visual=document.createElement('span');visual.className='t-check';visual.setAttribute('aria-hidden','true');visual.setAttribute('aria-checked',String(check.checked));
+    visual.innerHTML='<svg viewBox="0 0 10.1668 10.1668"><path d="M1 5.52L3.92 9.17L9.17 1"/></svg>';
+    // Length of the two straight path segments, used when geometry APIs are unavailable.
+    visual.style.setProperty('--check-len',String(Math.ceil(Math.hypot(2.92,3.65)+Math.hypot(5.25,8.17))));
+    control.append(check,visual);
     const content=document.createElement('span');
     const title=document.createElement('strong');title.textContent=x.label;
     const description=document.createElement('small');description.textContent=`${x.detail} · ${x.removable?'Select to remove':'Required for correct display'}`;
-    content.append(title,description);label.append(check,content);row.append(label);
+    content.append(title,description);label.append(control,content);row.append(label);
     if(x.value || x.rawPreview){const detail=document.createElement('details');const summary=document.createElement('summary');summary.textContent=x.value?'View embedded value':'View raw metadata bytes';const pre=document.createElement('pre');pre.textContent=x.value || x.rawPreview;detail.append(summary,pre);row.append(detail)}
-    el.append(row);
+    el.append(row);const path=visual.querySelector('path');if(path.getTotalLength)visual.style.setProperty('--check-len',Math.ceil(path.getTotalLength()));
   });
 }
 function updateSelection(){
@@ -27,7 +33,7 @@ function updateSelection(){
   $('#cleanDescription').textContent=count?`${count} ${count===1?'item':'items'} will be removed.`:'Nothing selected. Your copy will be unchanged.';
   $('#cleanBtn span').textContent=count?'Download clean copy':'Download unchanged';
 }
-function setSelection(all){const entry=getActive();if(!entry)return;entry.selected=new Set(all?entry.report.found.filter(x=>x.removable).map(x=>x.id):[]);select(entry.id)}
+function setSelection(all){const entry=getActive();if(!entry)return;entry.selected=new Set(all?entry.report.found.filter(x=>x.removable).map(x=>x.id):[]);document.querySelectorAll('.metadata-choice input').forEach(check=>{check.checked=entry.selected.has(check.dataset.metadataId);check.nextElementSibling.setAttribute('aria-checked',String(check.checked))});updateSelection();renderBatch()}
 function renderPhotoData(entry){
   const data={File:{name:entry.file.name,format:entry.report.format,bytes:entry.file.size,lastModified:new Date(entry.file.lastModified).toISOString(),width:entry.report.width,height:entry.report.height},...entry.decoded.details};
   $('#photoData').textContent=JSON.stringify(data,(key,value)=>ArrayBuffer.isView(value)?`Binary data (${value.byteLength} bytes)`:value,2);
@@ -74,7 +80,7 @@ async function handleFiles(files){const valid=[...files].filter(file=>Object.val
 function downloadBlob(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1500)}
 function clean(){const entry=getActive();if(!entry)return;const cleaned=entry.report.clean(entry.selected);downloadBlob(new Blob([cleaned],{type:entry.file.type}),cleanName(entry.file));toast(`Clean copy ready · ${human(cleaned.length)}`)}
 async function cleanAll(){if(!batch.length)return;if(!window.JSZip){toast('ZIP tools are still loading. Try again.');return}const button=$('#cleanAllBtn');button.disabled=true;button.innerHTML='<span>Packaging</span><b>···</b>';try{const zip=new JSZip();batch.forEach((entry,index)=>zip.file(`${String(index+1).padStart(3,'0')}-${cleanName(entry.file)}`,entry.report.clean(entry.selected)));const blob=await zip.generateAsync({type:'blob',compression:'DEFLATE',compressionOptions:{level:6}},meta=>{button.querySelector('b').textContent=`${Math.round(meta.percent)}%`});downloadBlob(blob,'clearframe-clean-images.zip');toast(`${batch.length} clean images ready`)}catch(e){toast('Could not create the ZIP file')}finally{button.disabled=false;button.innerHTML='<span>Download all</span><b>ZIP ↓</b>'}}
-function reset(){batch.forEach(x=>URL.revokeObjectURL(x.url));batch=[];activeId=null;input.value='';results.hidden=true;$('.workspace').hidden=false;document.body.classList.remove('has-results');showReview('clean');window.scrollTo({top:0,behavior:'smooth'})}function toast(s){const t=$('#toast');t.textContent=s;t.classList.add('show');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('show'),2800)}
+function reset(){batch.forEach(x=>URL.revokeObjectURL(x.url));batch=[];activeId=null;input.value='';results.hidden=true;$('.workspace').hidden=false;document.body.classList.remove('has-results');showReview('clean');window.scrollTo({top:0,behavior:'smooth'})}function toast(s){const t=$('#toast');t.textContent=s;t.classList.add('is-open');clearTimeout(t._timer);t._timer=setTimeout(()=>t.classList.remove('is-open'),2800)}
 $('#browseBtn').onclick=e=>{e.stopPropagation();input.click()};$('#addMore').onclick=()=>input.click();drop.onclick=e=>{if(e.target.tagName!=='BUTTON')input.click()};drop.onkeydown=e=>{if(e.target!==drop)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();input.click()}};input.onchange=()=>{handleFiles(input.files);input.value=''};['dragenter','dragover'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.add('dragging')}));['dragleave','drop'].forEach(n=>drop.addEventListener(n,e=>{e.preventDefault();drop.classList.remove('dragging')}));drop.ondrop=e=>handleFiles(e.dataTransfer.files);$('#selectAll').onclick=()=>setSelection(true);$('#deselectAll').onclick=()=>setSelection(false);$('#cleanBtn').onclick=clean;$('#cleanAllBtn').onclick=cleanAll;$('#startOver').onclick=reset;
 try{const ctx=document.modelContext;if(ctx?.registerTool){ctx.registerTool({name:'open_image_picker',title:'Choose images',description:'Open the device file picker to select images for a local metadata scan.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:false},execute(){input.click();return{status:'picker_opened'}}});ctx.registerTool({name:'get_scan_summary',title:'Read scan summary',description:'Return metadata scan summaries for the current image batch.',inputSchema:{type:'object',properties:{},additionalProperties:false},annotations:{readOnlyHint:true,untrustedContentHint:true},execute(){if(!batch.length)throw new Error('No images are currently selected');return{images:batch.map(x=>({file:x.file.name,privacy_findings:x.report.found.filter(y=>y.kind==='private').map(y=>y.label),provenance_findings:x.report.found.filter(y=>y.kind==='provenance').map(y=>y.label)}))}}})}}catch(e){}
 
@@ -82,6 +88,7 @@ function showReview(view){
   const details=view==='details';
   $('#cleanView').hidden=details;$('#detailsView').hidden=!details;
   for(const id of ['clean','details']){const tab=$('#'+id+'Tab'),active=id===view;tab.classList.toggle('active',active);tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1}
+  window.ClearFrameMotion?.moveTab();
 }
 for(const id of ['clean','details']){
   $('#'+id+'Tab').onclick=()=>showReview(id);

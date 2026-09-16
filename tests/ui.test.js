@@ -9,7 +9,7 @@ function setup(){
  w.TextDecoder=TextDecoder;w.TextEncoder=TextEncoder;w.Blob=Blob;
  w.URL.createObjectURL=()=> 'blob:test';w.URL.revokeObjectURL=()=>{};
  w.HTMLElement.prototype.scrollIntoView=()=>{};w.scrollTo=()=>{};
- w.eval(fs.readFileSync('metadata.js','utf8'));w.eval(fs.readFileSync('app.js','utf8'));
+ w.eval(fs.readFileSync('metadata.js','utf8'));w.eval(fs.readFileSync('motion.js','utf8'));w.eval(fs.readFileSync('app.js','utf8'));
  return {dom,w,query:s=>w.document.querySelector(s)};
 }
 const jpeg=new Uint8Array([255,216,255,254,0,7,65,108,105,99,101,255,227,0,4,1,2,255,217]);
@@ -59,5 +59,26 @@ test('photo detail tabs support keyboard navigation and show readable properties
   query('#detailsTab').dispatchEvent(new w.KeyboardEvent('keydown',{key:'ArrowLeft',bubbles:true}));
   assert.equal(query('#cleanView').hidden,false);assert.equal(w.document.activeElement.id,'cleanTab');
   query('#startOver').click();assert.equal(w.document.body.classList.contains('has-results'),false);
+ }finally{dom.window.close()}
+});
+
+test('animated disclosures keep closed content inaccessible and toggle with their buttons',()=>{
+ const {dom,query}=setup();try{
+  const item=query('.optional-panel.t-acc'),button=item.querySelector('button'),panel=item.querySelector('.t-acc-panel');
+  assert.equal(button.getAttribute('aria-expanded'),'false');assert.equal(panel.inert,true);
+  assert.equal(button.getAttribute('aria-controls'),panel.id);
+  button.click();assert.equal(item.dataset.open,'true');assert.equal(panel.inert,false);assert.equal(panel.getAttribute('aria-hidden'),'false');
+  button.click();assert.equal(panel.inert,true);assert.equal(button.getAttribute('aria-expanded'),'false');
+ }finally{dom.window.close()}
+});
+
+test('animated checkmarks stay synchronized with native inputs and bulk actions',async()=>{
+ const {dom,w,query}=setup();try{
+  await w.handleFiles([file('photo.jpg')]);
+  const check=query('#privacyFindings input'),visual=check.nextElementSibling;
+  check.click();assert.equal(visual.getAttribute('aria-checked'),'false');
+  query('#selectAll').click();assert.equal(visual.getAttribute('aria-checked'),'true');assert.equal(check.checked,true);
+  query('#deselectAll').click();assert.equal(visual.getAttribute('aria-checked'),'false');assert.equal(check.checked,false);
+  w.toast('Download ready');assert.equal(query('#toast').classList.contains('is-open'),true);
  }finally{dom.window.close()}
 });

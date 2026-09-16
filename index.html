@@ -7,6 +7,7 @@
   <meta name="description" content="View and remove photo metadata, including location, camera settings, and dates." />
   <title>ClearFrame — Photo metadata cleaner</title>
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='9' fill='%23ededeb'/%3E%3Cpath d='M9 13V9h4M19 9h4v4M23 19v4h-4M13 23H9v-4' fill='none' stroke='%23101010' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="motion.css" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -54,7 +55,7 @@
           <aside class="batch-panel" aria-label="Uploaded images"><div class="sidebar-label">PHOTOS <span>Choose to review</span></div><div id="batchList" class="batch-list"></div><button id="cleanAllBtn" class="batch-download" type="button"><span>Download all</span><b>ZIP ↓</b></button><p class="batch-hint">Uses each photo’s selections.</p></aside>
           <div class="detail-panel">
             <div class="result-top"><div class="file-card"><img id="preview" alt="Selected image preview" /><div><p id="fileName"></p><span id="fileDetails"></span></div></div><span class="selected-label"><span class="live-dot"></span>Ready</span></div>
-            <div class="review-tabs" role="tablist" aria-label="Photo review views"><button id="cleanTab" class="review-tab active" type="button" role="tab" aria-selected="true" aria-controls="cleanView" tabindex="0"><svg class="icon"><use href="#icon-sliders"/></svg>Choose what to remove</button><button id="detailsTab" class="review-tab" type="button" role="tab" aria-selected="false" aria-controls="detailsView" tabindex="-1"><svg class="icon"><use href="#icon-image"/></svg>Photo details</button></div>
+            <div class="review-tabs t-tabs" role="tablist" aria-label="Photo review views"><span class="t-tabs-pill" aria-hidden="true"></span><button id="cleanTab" class="review-tab t-tab active" type="button" role="tab" aria-selected="true" aria-controls="cleanView" tabindex="0"><svg class="icon"><use href="#icon-sliders"/></svg>Choose what to remove</button><button id="detailsTab" class="review-tab t-tab" type="button" role="tab" aria-selected="false" aria-controls="detailsView" tabindex="-1"><svg class="icon"><use href="#icon-image"/></svg>Photo details</button></div>
             <div id="cleanView" role="tabpanel" aria-labelledby="cleanTab">
               <div class="metadata-toolbar"><div><h3 id="summaryTitle">Metadata found</h3><p id="selectionCount" aria-live="polite"></p></div><div class="selection-actions"><button id="selectAll" class="text-button" type="button">Select all</button><span aria-hidden="true">/</span><button id="deselectAll" class="text-button" type="button">Deselect all</button></div></div>
               <p id="summaryCopy" class="metadata-help">Checked items will be removed. Everything else stays.</p>
@@ -93,10 +94,11 @@
     </section>
   </main>
   <footer><a class="brand footer-brand" href="#"><svg class="icon"><use href="#icon-frame"/></svg>clearframe.</a><a href="#scanner">Back to cleaner <span aria-hidden="true">↑</span></a></footer>
-  <div id="toast" class="toast" role="status"></div>
+  <div id="toast" class="toast t-toast" role="status"></div>
   <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="vendor/exifr.js"></script>
   <script src="metadata.js"></script>
+  <script src="motion.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
