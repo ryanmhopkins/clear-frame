@@ -88,9 +88,3 @@ for(const id of ['clean','details']){
   $('#'+id+'Tab').onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const target=e.key==='Home'?'clean':e.key==='End'?'details':id==='clean'?'details':'clean';showReview(target);$('#'+target+'Tab').focus()}};
 }
 for(const link of document.querySelectorAll('.nav-link'))link.addEventListener('click',()=>{document.querySelectorAll('.nav-link').forEach(x=>x.classList.toggle('active',x===link))});
-$('#sampleBtn').onclick=async()=>{
-  const button=$('#sampleBtn');button.disabled=true;
-  try{const response=await fetch('sample.png');if(!response.ok)throw new Error();const blob=await response.blob();await handleFiles([new File([blob],'a-quiet-moment.png',{type:'image/png',lastModified:0})]);toast('Sample loaded. The metadata is fictional.');}
-  catch{toast('Could not load the sample. Choose a photo from your device instead.');}
-  finally{button.disabled=false;}
-};

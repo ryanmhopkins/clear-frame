@@ -61,23 +61,3 @@ test('photo detail tabs support keyboard navigation and show readable properties
   query('#startOver').click();assert.equal(w.document.body.classList.contains('has-results'),false);
  }finally{dom.window.close()}
 });
-
-test('sample illustration has readable metadata and cleans to a valid container',async()=>{
- const bytes=new Uint8Array(fs.readFileSync('sample.png'));
- const report=metadata.scan(bytes);assert.equal(report.width,1000);assert.equal(report.height,700);
- await metadata.decode(bytes,report);assert.equal(report.found.length,5);
- assert.ok(report.found.some(x=>x.value.includes('Fictional metadata')));
- assert.equal(metadata.scan(report.clean()).found.length,0);
-});
-
-test('sample button loads the local illustration into the review flow',async()=>{
- const {dom,w,query}=setup();try{
-  w.File=File;
-  w.fetch=async url=>{assert.equal(url,'sample.png');return {ok:true,blob:async()=>new Blob([fs.readFileSync('sample.png')],{type:'image/png'})}};
-  await query('#sampleBtn').onclick();
-  assert.equal(query('#results').hidden,false);
-  assert.equal(query('#fileName').textContent,'a-quiet-moment.png');
-  assert.match(query('#selectionCount').textContent,/5 of 5/);
-  assert.equal(query('#sampleBtn').disabled,false);
- }finally{dom.window.close()}
-});

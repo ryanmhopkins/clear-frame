@@ -6,8 +6,6 @@ A local-first metadata scanner and selective cleaner for JPEG, PNG, and WebP ima
 
 A minimal charcoal interface with a single upload area, per-photo cleaning controls, and a separate Photo details tab. Optional credential and display settings expand on demand. Keyboard navigation and reduced-motion preferences are supported.
 
-Use **Try a sample** to explore the workflow with a local illustration and explicitly fictional metadata. Serve the directory over HTTP for the sample button to work.
-
 ## Inspect and clean
 
 - View available decoded EXIF, GPS, camera/lens, exposure, date, author, copyright, IPTC, XMP, thumbnail, and ICC tags, alongside basic file information.
