@@ -166,3 +166,11 @@ footer .creator-link:hover, footer .creator-link:focus-visible { color: var(--ac
 #bulkSelect[data-partial="true"] .t-toggle-thumb { animation: none; translate: 11px 0; }
 #bulkSelect[data-partial="true"] .partial-mark { opacity: 1; }
 @media (prefers-reduced-motion: reduce) { #bulkSelect, #bulkSelect svg, #bulkSelect .partial-mark { transition: none; } }
+
+/* More readable supporting content. */
+.section-heading h2 { font-size: 25px; font-weight: 550; }
+.plain-notes h3 { font-size: 15px; font-weight: 600; }
+.plain-notes p { font-size: 14px; line-height: 1.8; color: #b5b5b0; }
+.faq summary, .faq .t-acc-head { font-size: 14px; font-weight: 550; color: #deded8; padding-top: 19px; padding-bottom: 19px; }
+.faq p { font-size: 14px; line-height: 1.8; color: #b5b5b0; }
+@media (max-width: 680px) { .section-heading h2 { font-size: 23px; } }
