@@ -19,9 +19,10 @@ test('select/deselect all, individual choice, per-image persistence, download an
  try{
   await w.handleFiles([file('same.jpg'),file('same.jpg')]);
   assert.match(query('#selectionCount').textContent,/2 of 2/);
-  query('#deselectAll').click();assert.match(query('#selectionCount').textContent,/0 of 2/);
+  query('#bulkSelect').click();assert.match(query('#selectionCount').textContent,/0 of 2/);
   assert.equal(query('#cleanBtn span').textContent,'Download unchanged');
   let check=query('#privacyFindings input');check.click();
+  assert.equal(query('#bulkSelect').dataset.partial,'true');assert.equal(query('#bulkSelect').getAttribute('aria-checked'),'false');assert.equal(query('#bulkSelectState').textContent,'Some selected');
   assert.match(query('#selectionCount').textContent,/1 of 2/);
   w.document.querySelectorAll('.batch-item')[1].click();assert.match(query('#selectionCount').textContent,/2 of 2/);
   w.document.querySelectorAll('.batch-item')[0].click();assert.match(query('#selectionCount').textContent,/1 of 2/);
@@ -33,8 +34,8 @@ test('select/deselect all, individual choice, per-image persistence, download an
   w.JSZip=class {file(name,data){packaged.push({name,data})}async generateAsync(options,progress){progress({percent:100});return new Blob(['zip'])}};
   await w.cleanAll();assert.equal(packaged.length,2);assert.notEqual(packaged[0].name,packaged[1].name);
   assert.equal(metadata.scan(packaged[0].data).found.length,1);assert.equal(metadata.scan(packaged[1].data).found.length,0);
-  query('#selectAll').click();assert.match(query('#selectionCount').textContent,/2 of 2/);
-  query('#deselectAll').click();query('#cleanBtn').click();
+  query('#bulkSelect').click();assert.match(query('#selectionCount').textContent,/2 of 2/);assert.equal(query('#bulkSelect').getAttribute('aria-checked'),'true');
+  query('#bulkSelect').click();query('#cleanBtn').click();
   assert.deepEqual(new Uint8Array(await downloads.at(-1).blob.arrayBuffer()),jpeg);
   query('#startOver').click();assert.equal(query('#results').hidden,true);
  }finally{dom.window.close()}
@@ -77,8 +78,8 @@ test('animated checkmarks stay synchronized with native inputs and bulk actions'
   await w.handleFiles([file('photo.jpg')]);
   const check=query('#privacyFindings input'),visual=check.nextElementSibling;
   check.click();assert.equal(visual.getAttribute('aria-checked'),'false');
-  query('#selectAll').click();assert.equal(visual.getAttribute('aria-checked'),'true');assert.equal(check.checked,true);
-  query('#deselectAll').click();assert.equal(visual.getAttribute('aria-checked'),'false');assert.equal(check.checked,false);
+  query('#bulkSelect').click();assert.equal(visual.getAttribute('aria-checked'),'true');assert.equal(check.checked,true);
+  query('#bulkSelect').click();assert.equal(visual.getAttribute('aria-checked'),'false');assert.equal(check.checked,false);
   w.toast('Download ready');assert.equal(query('#toast').classList.contains('is-open'),true);
  }finally{dom.window.close()}
 });

@@ -145,3 +145,24 @@ body.has-results .hero { padding: 27px 0 30px; }body.has-results .hero-kicker { 
 footer .creator-link { display: inline-flex; align-items: center; gap: 9px; min-height: 32px; color: var(--muted); transition: color var(--check-box) var(--check-ease); }
 footer .creator-link:hover, footer .creator-link:focus-visible { color: var(--accent); }
 .creator-link .x-icon { width: 12px; height: 12px; flex-shrink: 0; }
+
+/* Bulk selection: transitions.dev toggle with a visible partial-selection state. */
+.bulk-selection { gap: 12px; }
+.bulk-selection > div { display: flex; flex-direction: column; gap: 2px; }
+#bulkSelectLabel { font-size: 11px; color: var(--text); }
+#bulkSelectState { font-size: 9px; color: var(--muted); }
+#bulkSelect {
+  --toggle-travel: 22px; --toggle-ov1: 2px; --toggle-ov2: 1px; --toggle-track: 180ms;
+  width: 48px; height: 26px; padding: 3px; border: 1px solid #414956; border-radius: 99px;
+  background: #262c35; position: relative; flex-shrink: 0;
+}
+#bulkSelect::before { content: ''; position: absolute; inset: -8px -4px; }
+#bulkSelect[data-on="true"] { background: var(--accent-strong); border-color: #6294ef; }
+#bulkSelect .t-toggle-thumb { display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: #ecf1fa; box-shadow: 0 1px 3px #0005; }
+#bulkSelect svg { width: 12px; height: 12px; fill: none; stroke: #245dba; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; opacity: 0; transform: scale(.5); transition: opacity 150ms ease, transform 250ms var(--check-ease); }
+#bulkSelect[data-on="true"] svg { opacity: 1; transform: scale(1); }
+#bulkSelect .partial-mark { position: absolute; width: 7px; height: 1.5px; background: #4d6e9f; opacity: 0; transition: opacity 150ms ease; }
+#bulkSelect[data-partial="true"] { background: #253b5b; border-color: #496894; }
+#bulkSelect[data-partial="true"] .t-toggle-thumb { animation: none; translate: 11px 0; }
+#bulkSelect[data-partial="true"] .partial-mark { opacity: 1; }
+@media (prefers-reduced-motion: reduce) { #bulkSelect, #bulkSelect svg, #bulkSelect .partial-mark { transition: none; } }
