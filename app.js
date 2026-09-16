@@ -94,4 +94,3 @@ for(const id of ['clean','details']){
   $('#'+id+'Tab').onclick=()=>showReview(id);
   $('#'+id+'Tab').onkeydown=e=>{if(['ArrowLeft','ArrowRight','Home','End'].includes(e.key)){e.preventDefault();const target=e.key==='Home'?'clean':e.key==='End'?'details':id==='clean'?'details':'clean';showReview(target);$('#'+target+'Tab').focus()}};
 }
-for(const link of document.querySelectorAll('.nav-link'))link.addEventListener('click',()=>{document.querySelectorAll('.nav-link').forEach(x=>x.classList.toggle('active',x===link))});
