@@ -21,8 +21,8 @@
       <div class="hero-kicker"><span>01</span><p>PRIVATE IMAGE TOOL</p></div>
       <h1 id="page-title">See what your<br><em>image carries.</em></h1>
       <div class="hero-bottom">
-        <p>Check a photo for location, device, date, and editing details. Then download a clean copy. The file never leaves your browser.</p>
-        <button class="hero-button" type="button" data-pick><span>Choose an image</span><b>↗</b></button>
+        <p>Check one image or a whole batch for location, device, date, and editing details. Then download clean copies. Your files never leave the browser.</p>
+        <button class="hero-button" type="button" data-pick><span>Choose images</span><b>↗</b></button>
       </div>
     </section>
 
@@ -31,23 +31,29 @@
     <section class="tool-shell" aria-label="Image metadata scanner">
       <div class="tool-bar"><div><span class="tool-dot"></span>Scanner</div><small>JPEG · PNG · WEBP</small></div>
       <div class="workspace">
-        <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Choose an image or drop it here">
-          <input id="fileInput" type="file" accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" hidden />
+        <div id="dropzone" class="dropzone" tabindex="0" role="button" aria-label="Choose images or drop them here">
+          <input id="fileInput" type="file" multiple accept="image/jpeg,image/png,image/webp,.jpg,.jpeg,.png,.webp" hidden />
           <div class="upload-icon" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="M24 31V13m0 0-7 7m7-7 7 7M11 32v4a3 3 0 0 0 3 3h20a3 3 0 0 0 3-3v-4"/></svg></div>
-          <h2>Drop an image here</h2>
+          <h2>Drop your images here</h2>
           <p>or <button id="browseBtn" type="button">browse your files</button></p>
           <small>Processed locally</small>
         </div>
       </div>
 
       <section id="results" class="results" aria-live="polite" hidden>
-        <div class="result-top"><div class="file-card"><img id="preview" alt="Selected image preview" /><div><p id="fileName"></p><span id="fileDetails"></span></div></div><button id="startOver" class="text-button" type="button">Choose another</button></div>
+        <div class="batch-head"><div><p class="eyebrow">BATCH SCAN</p><h2><span id="batchCount">0</span> images ready</h2></div><div class="batch-actions"><button id="addMore" class="text-button" type="button">Add more</button><button id="startOver" class="text-button" type="button">Clear all</button></div></div>
+        <div class="batch-layout">
+          <aside class="batch-panel" aria-label="Uploaded images"><div id="batchList" class="batch-list"></div><button id="cleanAllBtn" class="batch-download" type="button"><span>Clean all</span><b>ZIP ↓</b></button></aside>
+          <div class="detail-panel">
+        <div class="result-top"><div class="file-card"><img id="preview" alt="Selected image preview" /><div><p id="fileName"></p><span id="fileDetails"></span></div></div><span class="selected-label">SELECTED</span></div>
         <div class="score-row"><div class="score-ring" id="scoreRing"><strong id="score">—</strong><span>PRIVACY<br>SCORE</span></div><div><p class="eyebrow">SCAN COMPLETE</p><h2 id="summaryTitle">Review detected details</h2><p id="summaryCopy"></p></div></div>
         <div class="finding-grid">
           <article class="finding-panel"><div class="panel-heading"><div><span class="step">01</span><h3>Private details</h3></div><span id="privacyCount" class="count"></span></div><div id="privacyFindings" class="finding-list"></div></article>
           <article class="finding-panel"><div class="panel-heading"><div><span class="step">02</span><h3>Content credentials</h3></div><span id="provCount" class="count"></span></div><div id="provenanceFindings" class="finding-list"></div><p class="provenance-note">We show provenance details for transparency. ClearFrame doesn’t target them for removal.</p></article>
         </div>
-        <div class="clean-bar"><div><span class="step">03</span><div><h3>Make a clean copy</h3><p id="cleanDescription">Private metadata will be removed. Image pixels stay unchanged.</p></div></div><button id="cleanBtn" class="primary-button" type="button"><span>Clean & download</span><b>↓</b></button></div>
+        <div class="clean-bar"><div><span class="step">03</span><div><h3>Make a clean copy</h3><p id="cleanDescription">Private metadata will be removed. Image pixels stay unchanged.</p></div></div><button id="cleanBtn" class="primary-button" type="button"><span>Clean this image</span><b>↓</b></button></div>
+          </div>
+        </div>
       </section>
     </section>
 
@@ -60,6 +66,7 @@
 
   <footer><span>ClearFrame</span><p>Files stay yours.</p><button type="button" data-pick>Open scanner ↑</button></footer>
   <div id="toast" class="toast" role="status"></div>
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
   <script src="app.js"></script>
   <script>document.querySelectorAll('[data-pick]').forEach(button=>button.addEventListener('click',()=>document.querySelector('#fileInput').click()));</script>
 </body>
